@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: EASY - Examination System v2",
+  "description": "Examination Administration System for the Malaysian Red Crescent Society, managing the exam lifecycle from application to result printing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
