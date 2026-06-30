@@ -58,20 +58,7 @@ export const Header: React.FC<HeaderProps> = ({ role, setRole, onMenuClick, onLo
           </button>
         </div>
 
-        <div className="hidden sm:flex items-center gap-3 lg:pr-6 border-r border-gray-200">
-          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Role Swapper:</span>
-          <select 
-            value={role} 
-            onChange={(e) => setRole(e.target.value as UserRole)}
-            className="text-sm font-medium bg-gray-50 border border-gray-200 rounded-md px-2 py-1 outline-none cursor-pointer"
-          >
-            <option value={UserRole.DEC}>DEC (District)</option>
-            <option value={UserRole.SEC}>SEC (State)</option>
-            <option value={UserRole.SEBC}>SEBC (Chairman)</option>
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2 lg:gap-3 ml-2">
+        <div className="flex items-center gap-2 lg:gap-3 ml-2 lg:pr-6 border-l border-gray-200 pl-4 lg:pl-6">
           <button 
             onClick={onLogout}
             className="text-sm font-bold text-gray-500 hover:text-brand-red transition-colors flex items-center gap-2"

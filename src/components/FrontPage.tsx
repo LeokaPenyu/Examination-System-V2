@@ -23,11 +23,11 @@ export const FrontPage: React.FC<FrontPageProps> = ({ onSelectRole }) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-surface-cream flex items-center justify-center p-4 sm:p-8 selection:bg-red-100 relative">
+    <div className="min-h-screen bg-[#FF0052] flex items-center justify-center p-4 sm:p-8 selection:bg-red-100 relative">
       {/* Background ambient light */}
-      <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-red-100/40 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-[60%] h-[60%] bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
       
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10 min-h-[500px]">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-[0_20px_60px_-10px_rgba(0,0,0,0.5),0_10px_30px_-5px_rgba(0,0,0,0.3)] border-t border-l border-white/60 overflow-hidden flex flex-col md:flex-row relative z-10 min-h-[500px] hover:shadow-[0_30px_70px_-10px_rgba(0,0,0,0.6),0_15px_40px_-5px_rgba(0,0,0,0.4)] transition-shadow duration-500">
         {/* Left Panel - Advertisement */}
         <div className="hidden md:flex md:w-1/2 relative bg-white border-r border-gray-200 overflow-hidden flex-col justify-center">
           <AnimatePresence mode="wait">

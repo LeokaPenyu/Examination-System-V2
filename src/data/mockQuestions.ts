@@ -56,31 +56,34 @@ const MOCK_QUESTIONS_POOL = [
     desc: 'Antara berikut, yang manakah merupakan prinsip asas Palang Merah dan Bulan Sabit Merah?',
     opts: ['Kekuatan', 'Kemanusiaan', 'Keberanian', 'Kegigihan'],
     ans: 'Kemanusiaan'
+  }
+];
+
+const MOCK_SUBJECTIVE_POOL = [
+  {
+    desc: 'Jelaskan tiga langkah keselamatan sebelum memulakan CPR ke atas mangsa.',
+    opts: [],
+    ans: '1. Pastikan persekitaran selamat.\n2. Pakai sarung tangan jika ada.\n3. Tepuk bahu mangsa dan tanya khabar untuk periksa tindak balas.'
   },
   {
-    desc: 'Apakah tanda utama seseorang sedang mengalami strok?',
-    opts: ['Menjerit kesakitan', 'Muka menjadi separuh herot atau lemah', 'Suhu badan naik mendadak', 'Pendarahan pada hidung'],
-    ans: 'Muka menjadi separuh herot atau lemah'
+    desc: 'Terangkan perbezaan antara balutan dan anduh.',
+    opts: [],
+    ans: 'Balutan digunakan untuk menutup luka dan menyerap darah, manakala anduh digunakan untuk menyokong dan merehatkan anggota badan yang tercedera.'
   },
   {
-    desc: 'Bagaimanakah cara untuk merawat pendarahan hidung?',
-    opts: ['Dongakkan kepala mangsa ke belakang', 'Letakkan ais pada dahi', 'Tundukkan kepala mangsa dan picit hidung', 'Sumbat hidung dengan tisu'],
-    ans: 'Tundukkan kepala mangsa dan picit hidung'
+    desc: 'Bincangkan kepentingan Prinsip Kemanusiaan dalam Palang Merah.',
+    opts: [],
+    ans: 'Prinsip Kemanusiaan memastikan bantuan diberikan kepada sesiapa sahaja tanpa diskriminasi, mengutamakan keselamatan dan mengurangkan penderitaan manusia.'
   },
   {
-    desc: 'Dalam rawatan terbakar, apakah yang patut dilakukan dengan segera?',
-    opts: ['Sapukan ubat gigi', 'Balut dengan kapas', 'Lalukan kawasan terbakar di bawah air bersih sekurang-kurangnya 10 minit', 'Pecahkan gelembung air'],
-    ans: 'Lalukan kawasan terbakar di bawah air bersih sekurang-kurangnya 10 minit'
+    desc: 'Senaraikan 4 barangan wajib di dalam peti pertolongan cemas.',
+    opts: [],
+    ans: '1. Pembalut segi tiga\n2. Kain kasa steril\n3. Plaster\n4. Gunting'
   },
   {
-    desc: 'Apakah tujuan utama bantuan pernafasan (Rescue Breathing)?',
-    opts: ['Menghidupkan jantung', 'Membekalkan oksigen ke paru-paru', 'Meredakan tekanan mangsa', 'Memanaskan badan mangsa'],
-    ans: 'Membekalkan oksigen ke paru-paru'
-  },
-  {
-    desc: 'Siapakah pengasas pergerakan Palang Merah antarabangsa?',
-    opts: ['Florence Nightingale', 'Henry Dunant', 'Clara Barton', 'Louis Pasteur'],
-    ans: 'Henry Dunant'
+    desc: 'Apakah tindakan segera jika mangsa tercekik tetapi masih sedar?',
+    opts: [],
+    ans: 'Lakukan Heimlich Maneuver (tujah abdomen) untuk mengeluarkan objek yang menyekat saluran pernafasan.'
   }
 ];
 
@@ -89,8 +92,8 @@ const generateMockQuestions = (): Question[] => {
   let qId = 1;
   ALL_COURSES.forEach(course => {
     ALL_CATEGORIES.forEach(category => {
-      // Put 5 mock questions into each category for full example
-      MOCK_QUESTIONS_POOL.slice(0, 5).forEach((q) => {
+      // 5 Objective questions
+      MOCK_QUESTIONS_POOL.forEach((q) => {
         generated.push({
           id: `q${qId++}`,
           course,
@@ -100,6 +103,19 @@ const generateMockQuestions = (): Question[] => {
           options: q.opts,
           answer: q.ans,
           score: 5
+        });
+      });
+      // 5 Subjective questions
+      MOCK_SUBJECTIVE_POOL.forEach((q) => {
+        generated.push({
+          id: `q${qId++}`,
+          course,
+          category,
+          type: 'Subjective',
+          description: q.desc,
+          options: q.opts,
+          answer: q.ans,
+          score: 10
         });
       });
     });

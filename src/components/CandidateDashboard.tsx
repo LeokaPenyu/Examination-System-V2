@@ -239,7 +239,10 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onLogout
 
       <div className={`w-72 h-screen bg-white border-r border-gray-200 flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div 
-          onClick={() => setIsProfileModalOpen(true)}
+          onClick={() => {
+            setIsProfileModalOpen(true);
+            if (window.innerWidth < 1024) setIsSidebarOpen(false);
+          }}
           className="p-5 border-b border-gray-50 flex items-center justify-between bg-brand-red cursor-pointer hover:bg-brand-red-deep transition-colors"
         >
           <div className="flex items-center gap-3">
@@ -260,7 +263,10 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onLogout
 
         <nav className="flex-1 px-4 py-4 space-y-0.5 overflow-y-auto bg-gray-50/20">
           <button
-            onClick={() => setActiveView('dashboard')}
+            onClick={() => {
+              setActiveView('dashboard');
+              if (window.innerWidth < 1024) setIsSidebarOpen(false);
+            }}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[6px] text-[13px] font-bold transition-all relative group ${
               activeView === 'dashboard' 
               ? 'bg-blush-rose text-brand-red-deep shadow-sm' 
@@ -289,7 +295,10 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onLogout
             {examMenuOpen && (
               <div className="pl-10 space-y-0.5 pb-1">
                 <button
-                  onClick={() => setActiveView('upcoming')}
+                  onClick={() => {
+                    setActiveView('upcoming');
+                    if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                  }}
                   className={`w-full text-left px-3 py-2 rounded-[6px] text-[12px] font-medium transition-all ${
                     activeView === 'upcoming' 
                     ? 'text-brand-red font-bold bg-gray-50' 
@@ -299,7 +308,10 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onLogout
                   Upcoming Exam
                 </button>
                 <button
-                  onClick={() => setActiveView('retest')}
+                  onClick={() => {
+                    setActiveView('retest');
+                    if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                  }}
                   className={`w-full text-left px-3 py-2 rounded-[6px] text-[12px] font-medium transition-all ${
                     activeView === 'retest' 
                     ? 'text-orange-500 font-bold bg-orange-50/50' 
@@ -309,7 +321,10 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onLogout
                   Retest
                 </button>
                 <button
-                  onClick={() => setActiveView('past')}
+                  onClick={() => {
+                    setActiveView('past');
+                    if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                  }}
                   className={`w-full text-left px-3 py-2 rounded-[6px] text-[12px] font-medium transition-all ${
                     activeView === 'past' 
                     ? 'text-brand-red font-bold bg-gray-50' 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { FileText, Save, CheckCircle, Download, BookOpen, Clock, CalendarDays, Key, FileCheck2, ChevronDown, ChevronRight, Eye, Trash2, Edit, Plus, LayoutList, CalendarClock, ClipboardList } from 'lucide-react';
+import { FileText, Save, CheckCircle, Download, BookOpen, Clock, CalendarDays, Key, FileCheck2, ChevronDown, ChevronRight, Eye, Trash2, Edit, Plus, LayoutList, CalendarClock, ClipboardList, RefreshCcw } from 'lucide-react';
 import { sharedQuestions, COURSES_MAP } from '../data/mockQuestions';
 
 export const ExamPaperGeneratorModule = () => {
@@ -17,6 +17,7 @@ export const ExamPaperGeneratorModule = () => {
   const [examTime, setExamTime] = useState('');
   const [examDuration, setExamDuration] = useState('');
   const [examiner, setExaminer] = useState('');
+  const [paperType, setPaperType] = useState<'Objective' | 'Subjective'>('Objective');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [isGenerated, setIsGenerated] = useState(false);
@@ -26,8 +27,8 @@ export const ExamPaperGeneratorModule = () => {
   
   // Mock Lists
   const [generatedPapers, setGeneratedPapers] = useState([
-    { id: 'GP1', course: 'CHED1031', batchNumber: 'BATCH-2026-01', date: '2026-07-01', generatedAt: '2026-06-18 10:30 AM', time: '09:00', duration: '120', questionCount: 40, examiner: 'Ahmad Razak', selectedQuestions: sharedQuestions.filter(q => q.course === 'CHED1031').slice(0, 40).map(q => q.id) },
-    { id: 'GP2', course: 'CBFA1021', batchNumber: 'BATCH-2026-02', date: '2026-07-15', generatedAt: '2026-06-17 02:15 PM', time: '14:00', duration: '90', questionCount: 25, examiner: 'Siti Nur', selectedQuestions: sharedQuestions.filter(q => q.course === 'CBFA1021').slice(0, 25).map(q => q.id) },
+    { id: 'GP1', course: 'CHED1031', batchNumber: 'BATCH-2026-01', date: '2026-07-01', generatedAt: '2026-06-18 10:30 AM', time: '09:00', duration: '120', questionCount: 40, examiner: 'Ahmad Razak', paperType: 'Objective', selectedQuestions: sharedQuestions.filter(q => q.course === 'CHED1031').slice(0, 40).map(q => q.id) },
+    { id: 'GP2', course: 'CBFA1021', batchNumber: 'BATCH-2026-02', date: '2026-07-15', generatedAt: '2026-06-17 02:15 PM', time: '14:00', duration: '90', questionCount: 25, examiner: 'Siti Nur', paperType: 'Subjective', selectedQuestions: sharedQuestions.filter(q => q.course === 'CBFA1021').slice(0, 25).map(q => q.id) },
   ]);
 
   const [upcomingExams, setUpcomingExams] = useState([
@@ -35,7 +36,21 @@ export const ExamPaperGeneratorModule = () => {
     { id: 'UE2', course: 'VERC1011', title: 'Pendidikan Palang Merah Tinggi', date: '2026-08-20', candidates: 20, location: 'Sibu Chapter' },
   ]);
 
-  const availableCategories = Array.from(new Set(sharedQuestions.filter(q => q.course === course).map(q => q.category)));
+  const availableCategories = Array.from(new Set(sharedQuestions.filter(q => q.course === course && q.type === paperType).map(q => q.category)));
+
+  const autoSelectQuestions = (category: string, count: number) => {
+    const questionsInCategory = sharedQuestions.filter(q => q.course === course && q.type === paperType && q.category === category);
+    const questionsToSelect = questionsInCategory.slice(0, count).map(q => q.id);
+    
+    setSelectedQuestions(prev => {
+      // Remove any previously selected questions from this category that match the current paperType
+      const prevWithoutCategory = prev.filter(id => {
+        const q = sharedQuestions.find(sq => sq.id === id);
+        return !(q && q.course === course && q.type === paperType && q.category === category);
+      });
+      return [...prevWithoutCategory, ...questionsToSelect];
+    });
+  };
 
   const toggleQuestionSelection = (qId: string) => {
     setSelectedQuestions(prev => {
@@ -81,6 +96,7 @@ export const ExamPaperGeneratorModule = () => {
             generatedAt,
             questionCount: selectedQuestions.length,
             examiner,
+            paperType,
             selectedQuestions
           } : p
         ));
@@ -96,6 +112,7 @@ export const ExamPaperGeneratorModule = () => {
             generatedAt,
             questionCount: selectedQuestions.length, 
             examiner: examiner || 'Admin',
+            paperType,
             selectedQuestions
           },
           ...prev
@@ -112,6 +129,7 @@ export const ExamPaperGeneratorModule = () => {
     setExamTime('');
     setExamDuration('');
     setExaminer('');
+    setPaperType('Objective');
     setSelectedQuestions([]);
     setEditingPaperId(null);
     setErrorMsg('');
@@ -143,6 +161,7 @@ export const ExamPaperGeneratorModule = () => {
     setExamTime(paper.time || '');
     setExamDuration(paper.duration || '');
     setExaminer(paper.examiner);
+    setPaperType(paper.paperType || 'Objective');
     setSelectedQuestions(paper.selectedQuestions || []);
     setEditingPaperId(paper.id);
     setCurrentView('view-generated');
@@ -158,10 +177,22 @@ export const ExamPaperGeneratorModule = () => {
           <h2 className="font-bold text-xl text-gray-900 tracking-tight">{currentView === 'preview' ? 'Paper Preview' : 'Generated Document View'}</h2>
         </div>
 
+        {errorMsg && (
+          <div className="bg-rose-50 text-brand-red p-4 rounded-lg border border-brand-red/20 text-sm font-bold shadow-sm">
+            {errorMsg}
+          </div>
+        )}
+        {successMsg && (
+          <div className="bg-green-50 text-green-700 p-4 rounded-lg border border-green-200 text-sm font-bold shadow-sm">
+            {successMsg}
+          </div>
+        )}
+
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative p-6 md:p-8 space-y-6">
           <div className="border-b border-gray-200 pb-4">
              <h3 className="text-xl font-bold text-gray-800">{course ? `${course} - ${COURSES_MAP[course as keyof typeof COURSES_MAP] || ''}` : 'No Course Selected'}</h3>
              <p className="text-sm text-gray-600 mt-2">Batch: {batchNumber || 'N/A'} | Date: {examDate || 'N/A'} | Examiner: {examiner || 'N/A'}</p>
+             <p className="text-sm text-gray-600 mt-1">Paper Type: <span className="font-bold">{paperType}</span></p>
              <p className="text-sm text-gray-600 font-bold mt-1">Total Selected Questions: {selectedQuestions.length}</p>
           </div>
           
@@ -176,19 +207,26 @@ export const ExamPaperGeneratorModule = () => {
                      {selectedInCat.map((q, idx) => (
                        <div key={q.id} className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                          <p className="font-medium text-gray-800 text-sm"><span className="mr-2 font-bold">{idx + 1}.</span>{q.description}</p>
-                         <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm pl-6">
-                           {q.options.map((opt, oIdx) => {
-                             const isCorrectAnswer = opt === q.answer;
-                             return (
-                               <div key={oIdx} className="flex flex-row items-start gap-2">
-                                 <span className="font-bold text-gray-500">{String.fromCharCode(65 + oIdx)}.</span>
-                                 <span className={isCorrectAnswer ? 'text-green-600 font-bold' : 'text-gray-700'}>
-                                   {opt} {isCorrectAnswer && '(Answer)'}
-                                 </span>
-                               </div>
-                             );
-                           })}
-                         </div>
+                         {q.options && q.options.length > 0 ? (
+                           <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm pl-6">
+                             {q.options.map((opt, oIdx) => {
+                               const isCorrectAnswer = opt === q.answer;
+                               return (
+                                 <div key={oIdx} className="flex flex-row items-start gap-2">
+                                   <span className="font-bold text-gray-500">{String.fromCharCode(65 + oIdx)}.</span>
+                                   <span className={isCorrectAnswer ? 'text-green-600 font-bold' : 'text-gray-700'}>
+                                     {opt} {isCorrectAnswer && '(Answer)'}
+                                   </span>
+                                 </div>
+                               );
+                             })}
+                           </div>
+                         ) : (
+                           <div className="mt-3 text-sm pl-6">
+                             <span className="font-bold text-gray-500 block mb-1">Answer Guide:</span>
+                             <span className="text-green-600 font-medium whitespace-pre-wrap">{q.answer}</span>
+                           </div>
+                         )}
                        </div>
                      ))}
                    </div>
@@ -216,10 +254,10 @@ export const ExamPaperGeneratorModule = () => {
                 <button 
                   onClick={generatePaper}
                   disabled={isGenerated || selectedQuestions.length === 0}
-                  className={`px-6 py-3 rounded-lg text-sm font-bold shadow-sm transition-all flex justify-center items-center gap-2 flex-1 md:flex-none ${
+                  className={`px-6 py-3 rounded-md text-sm font-bold shadow-sm transition-all flex justify-center items-center gap-2 flex-1 md:flex-none ${
                     isGenerated || selectedQuestions.length === 0
                     ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
-                    : 'bg-[#4274D9] text-white hover:opacity-90 hover:shadow-md'
+                    : 'bg-[#008B8B] text-white hover:bg-teal-700'
                   }`}
                 >
                   {isGenerated ? (
@@ -343,6 +381,41 @@ export const ExamPaperGeneratorModule = () => {
                     />
                   </div>
                 </div>
+                
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Jenis Kertas Soalan (Paper Type)</label>
+                  <div className="flex gap-4 bg-gray-50 p-2.5 rounded-md border border-gray-200">
+                    <label className="flex items-center gap-2 cursor-pointer flex-1 justify-center p-2 rounded hover:bg-white border border-transparent hover:border-gray-300 transition-all">
+                      <input 
+                        type="radio" 
+                        name="paperType" 
+                        value="Objective" 
+                        checked={paperType === 'Objective'} 
+                        onChange={() => {
+                          setPaperType('Objective');
+                          setSelectedQuestions([]);
+                        }} 
+                        className="text-action-teal focus:ring-action-teal"
+                      />
+                      <span className="text-sm font-medium text-gray-700">Objektif (Aneka Pilihan)</span>
+                    </label>
+                    <div className="w-px bg-gray-200"></div>
+                    <label className="flex items-center gap-2 cursor-pointer flex-1 justify-center p-2 rounded hover:bg-white border border-transparent hover:border-gray-300 transition-all">
+                      <input 
+                        type="radio" 
+                        name="paperType" 
+                        value="Subjective" 
+                        checked={paperType === 'Subjective'} 
+                        onChange={() => {
+                          setPaperType('Subjective');
+                          setSelectedQuestions([]);
+                        }} 
+                        className="text-action-teal focus:ring-action-teal"
+                      />
+                      <span className="text-sm font-medium text-gray-700">Subjektif (Esei / Struktur)</span>
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -352,7 +425,12 @@ export const ExamPaperGeneratorModule = () => {
                 </h3>
                 
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-[500px] overflow-y-auto">
-                  <p className="text-sm text-gray-600 mb-4 sticky top-0 bg-gray-50 py-2 z-10 border-b border-gray-200">Select the specific questions to include from each category.</p>
+                  <p className="text-sm text-gray-600 mb-4 sticky top-0 bg-gray-50 py-2 z-10 border-b border-gray-200 flex justify-between items-center">
+                    <span>Select the specific questions to include from each category.</span>
+                    {course && availableCategories.length > 0 && (
+                      <span className="font-bold text-brand-red">Paper: {paperType}</span>
+                    )}
+                  </p>
                   
                   <div className="space-y-3">
                     {!course ? (
@@ -361,7 +439,8 @@ export const ExamPaperGeneratorModule = () => {
                       <div className="text-sm text-gray-400 italic">No categories found in Question Bank for this course.</div>
                     ) : (
                       availableCategories.map(cat => {
-                        const questionsInCategory = sharedQuestions.filter(q => q.course === course && q.category === cat);
+                        const questionsInCategory = sharedQuestions.filter(q => q.course === course && q.category === cat && q.type === paperType);
+                        if (questionsInCategory.length === 0) return null;
                         const selectedCount = questionsInCategory.filter(q => selectedQuestions.includes(q.id)).length;
                         const isExpanded = expandedCategory === cat;
                         
@@ -426,10 +505,10 @@ export const ExamPaperGeneratorModule = () => {
                   <button 
                     onClick={() => setCurrentView('preview')}
                     disabled={isGenerated || !course || selectedQuestions.length === 0}
-                    className={`px-6 py-3 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-2 ${
+                    className={`px-6 py-3 rounded-md text-sm font-bold shadow-sm transition-all flex items-center gap-2 ${
                       isGenerated || !course || selectedQuestions.length === 0
                       ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
-                      : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md'
+                      : 'bg-[#008B8B] text-white hover:bg-teal-700'
                     }`}
                   >
                     <Eye className="w-4 h-4" /> Paper Preview
@@ -571,9 +650,14 @@ export const ExamPaperGeneratorModule = () => {
                     <td className="p-4 text-sm font-medium text-gray-700">{paper.date}</td>
                     <td className="p-4 text-xs font-mono text-gray-600 bg-gray-50 border-x border-gray-100/50">{paper.generatedAt || 'N/A'}</td>
                     <td className="p-4">
-                      <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-md bg-gray-100 text-gray-700 border border-gray-200">
-                        {paper.questionCount} Qs
-                      </span>
+                      <div className="flex flex-col gap-1">
+                        <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-md bg-gray-100 text-gray-700 border border-gray-200">
+                          {paper.questionCount} Qs
+                        </span>
+                        <span className="text-[10px] text-gray-500 font-medium">
+                          {paper.paperType || 'Objective'}
+                        </span>
+                      </div>
                     </td>
     <td className="p-4 text-right">
       <div className="flex justify-end gap-1">
@@ -592,6 +676,7 @@ export const ExamPaperGeneratorModule = () => {
             setExamTime(paper.time || '');
             setExamDuration(paper.duration || '');
             setExaminer(paper.examiner);
+            setPaperType(paper.paperType || 'Objective');
             setSelectedQuestions(paper.selectedQuestions || []);
             setEditingPaperId(paper.id);
             setCurrentView('generate');
@@ -661,7 +746,7 @@ export const ExamPaperGeneratorModule = () => {
                     <td className="p-4 text-right">
                       <button 
                         onClick={() => handleGenerateFromUpcoming(exam)}
-                        className="bg-[#4274D9] text-white hover:opacity-90 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-flex items-center gap-1.5"
+                        className="bg-[#008B8B] text-white hover:bg-teal-700 px-3 py-1.5 rounded-md text-xs font-bold transition-colors inline-flex items-center gap-1.5"
                       >
                         <FileCheck2 className="w-3.5 h-3.5" />
                         Generate Paper
