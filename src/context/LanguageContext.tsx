@@ -1,3 +1,4 @@
+'use client';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Language, TRANSLATIONS } from '../types';
 
@@ -98,7 +99,7 @@ const MOCK_DICTIONARY: Record<string, { BM: string; EN: string }> = {
   }
 };
 
-export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>(Language.BM);
 
   const handleSetLanguage = (newLang: Language) => {

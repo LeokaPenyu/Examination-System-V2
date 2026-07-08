@@ -285,7 +285,7 @@ export const ExamPaperGeneratorModule = () => {
              <h2 className="font-bold text-xl text-gray-900 tracking-tight">Generation of Exam Paper</h2>
            </div>
            <button 
-             onClick={() => setCurrentView('dashboard')}
+             onClick={() => setCurrentView('exam-papers-list')}
              className="px-4 py-2 text-sm font-bold text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2"
            >
              Cancel
@@ -676,7 +676,7 @@ export const ExamPaperGeneratorModule = () => {
             setExamTime(paper.time || '');
             setExamDuration(paper.duration || '');
             setExaminer(paper.examiner);
-            setPaperType(paper.paperType || 'Objective');
+            setPaperType((paper.paperType as "Objective" | "Subjective") || 'Objective');
             setSelectedQuestions(paper.selectedQuestions || []);
             setEditingPaperId(paper.id);
             setCurrentView('generate');

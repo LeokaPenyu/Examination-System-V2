@@ -125,7 +125,7 @@ export const ExamSummaryView: React.FC<ExamSummaryViewProps> = ({
     candidates: selectedMock.candidates as Candidate[]
   };
 
-  const [candidates, setCandidates] = useState<Candidate[]>(() => {
+  const [candidates, setCandidates] = useState<any[]>(() => {
     return examData.candidates.map(c => {
       const candidate: Candidate = {
         ...c,
@@ -882,7 +882,7 @@ export const ExamSummaryView: React.FC<ExamSummaryViewProps> = ({
             className="space-y-6 text-[13px] text-charcoal"
           >
             {/* Locked/Submitted/Ready Worklist Style Header (Figure 14) */}
-            {(isExpired || localStatus === ExamStatus.SUBMITTED || localStatus === ExamStatus.APPROVED) && (
+            {(isExpired || (localStatus as any) === ExamStatus.SUBMITTED || localStatus === ExamStatus.APPROVED) && (
               <div className="border border-gray-300 p-4 mb-4 bg-[#F0F0F0]/50">
                 <div className="border-b border-gray-300 pb-2 mb-3">
                   <h3 className="text-xl text-charcoal font-bold">
@@ -910,7 +910,7 @@ export const ExamSummaryView: React.FC<ExamSummaryViewProps> = ({
             {(isExpired || localStatus === ExamStatus.UNLOCK_REQUESTED) ? (
               <div className="card text-center py-12 space-y-6 border border-gray-300">
                 <p className="text-[13px] font-bold text-charcoal max-w-2xl mx-auto leading-relaxed">
-                  {localStatus === ExamStatus.SUBMITTED 
+                  {(localStatus as any) === ExamStatus.SUBMITTED 
                     ? 'Rumusan Peperiksaan telah dihantar dan sedang diproses oleh Penyelaras Peperiksaan Negeri (SEC).'
                     : <>Rumusan Peperiksaan menunggu penyerahan oleh Penyelaras Peperiksaan Daerah.<br/>Tarikh akhir penyerahan: <span className="text-red-600">{examData.deadline}</span></>
                   }
@@ -927,7 +927,7 @@ export const ExamSummaryView: React.FC<ExamSummaryViewProps> = ({
                       </button>
                    </div>
                 )}
-                {localStatus !== ExamStatus.SUBMITTED && role !== UserRole.SEC && role !== UserRole.SEBC && (
+                {(localStatus as any) !== ExamStatus.SUBMITTED && role !== UserRole.SEC && role !== UserRole.SEBC && (
                    <div className="flex justify-center mt-6">
                       <button 
                         onClick={handleUnlockRequest}
@@ -948,7 +948,7 @@ export const ExamSummaryView: React.FC<ExamSummaryViewProps> = ({
                     </div>
                   </div>
                 )}
-                {localStatus === ExamStatus.SUBMITTED && (
+                {(localStatus as any) === ExamStatus.SUBMITTED && (
                    <div className="flex justify-center">
                       <div className="flex items-center gap-2 px-4 md:px-6 py-2 bg-green-50 text-green-700 border border-green-200 rounded font-bold text-xs uppercase">
                         <CheckCircle2 className="w-3.5 h-3.5" />

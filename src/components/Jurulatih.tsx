@@ -319,7 +319,7 @@ export const Jurulatih: React.FC = () => {
                   onClick={handleSave}
                   className="px-4 md:px-6 py-2 bg-action-teal hover:bg-teal-700 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
                 >
-                  <Save className="w-5 h-5" /> {t('simpan') || 'Simpan'}
+                  <Save className="w-5 h-5" /> Simpan
                 </button>
               </div>
             </div>

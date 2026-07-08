@@ -1,48 +1,71 @@
+'use client';
 import React from 'react';
-import { Sidebar } from './components/Sidebar';
-import { Header } from './components/Header';
-import { Dashboard } from './components/Dashboard';
-import { FrontPage } from './components/FrontPage';
-import { CandidateDashboard } from './components/CandidateDashboard';
-import { UserRole, ViewType, ExamStatus } from './types';
+import { Sidebar } from '../components/Sidebar';
+import { Header } from '../components/Header';
+import { Dashboard } from '../components/Dashboard';
+import { FrontPage } from '../components/FrontPage';
+import { CandidateDashboard } from '../components/CandidateDashboard';
+import { UserRole, ViewType, ExamStatus } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { useLanguage } from './context/LanguageContext';
+import { useLanguage, LanguageProvider } from '../context/LanguageContext';
 import { 
   Building2,
   CheckCircle2
 } from 'lucide-react';
 
-import { ApplicationForm } from './components/ApplicationForm';
-import { ExamApplicationModule } from './components/ExamApplicationModule';
-import { ExamTypeSelection } from './components/ExamTypeSelection';
-import { ExamSummaryView } from './components/ExamSummaryView';
-import { mockExams as initialExams, MockExam } from './data/mockExams';
+import { ApplicationForm } from '../components/ApplicationForm';
+import { ExamApplicationModule } from '../components/ExamApplicationModule';
+import { ExamTypeSelection } from '../components/ExamTypeSelection';
+import { ExamSummaryView } from '../components/ExamSummaryView';
+import { mockExams as initialExams, MockExam } from '../data/mockExams';
 
-import { CertificateRenewalModule } from './components/CertificateRenewalModule';
-import { AttendanceCertificateModule } from './components/AttendanceCertificateModule';
-import { OnlineExamModule } from './components/OnlineExamModule';
-import { ExamResultsEntry } from './components/ExamResultsEntry';
-import { QuestionBankModule } from './components/QuestionBankModule';
-import { ExamPaperGeneratorModule } from './components/ExamPaperGeneratorModule';
-import { RetestModule } from './components/RetestModule';
-import { ReportsModule } from './components/ReportsModule';
-import { ProfilDaerah } from './components/ProfilDaerah';
-import { ProfilSubjek } from './components/ProfilSubjek';
-import { Calon } from './components/Calon';
-import { Jurulatih } from './components/Jurulatih';
-import { ProfilPengguna } from './components/ProfilPengguna';
-import { PerananPengguna } from './components/PerananPengguna';
-import { TetapanAm } from './components/TetapanAm';
-import { JadualPeperiksaan } from './components/JadualPeperiksaan';
-import { PeperiksaanMain } from './components/PeperiksaanMain';
+import { CertificateRenewalModule } from '../components/CertificateRenewalModule';
+import { AttendanceCertificateModule } from '../components/AttendanceCertificateModule';
+import { OnlineExamModule } from '../components/OnlineExamModule';
+import { ExamResultsEntry } from '../components/ExamResultsEntry';
+import { QuestionBankModule } from '../components/QuestionBankModule';
+import { ExamPaperGeneratorModule } from '../components/ExamPaperGeneratorModule';
+import { RetestModule } from '../components/RetestModule';
+import { ReportsModule } from '../components/ReportsModule';
+import { ProfilDaerah } from '../components/ProfilDaerah';
+import { ProfilSubjek } from '../components/ProfilSubjek';
+import { Calon } from '../components/Calon';
+import { Jurulatih } from '../components/Jurulatih';
+import { ProfilPengguna } from '../components/ProfilPengguna';
+import { PerananPengguna } from '../components/PerananPengguna';
+import { TetapanAm } from '../components/TetapanAm';
+import { JadualPeperiksaan } from '../components/JadualPeperiksaan';
+import { PeperiksaanMain } from '../components/PeperiksaanMain';
 
 export default function App() {
+  const [mounted, setMounted] = React.useState(false);
+  
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
+  );
+}
+
+function AppContent() {
   const { t } = useLanguage();
   const [appMode, setAppMode] = React.useState<'front' | 'coordinator' | 'candidate'>('front');
   const [isLoggedIn, setIsLoggedIn] = React.useState(true);
   const [activeView, setActiveView] = React.useState<ViewType>('Dashboard');
   const [role, setRole] = React.useState<UserRole>(UserRole.DEC);
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(window.innerWidth >= 1024);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+  
+  React.useEffect(() => {
+    setIsSidebarOpen(window.innerWidth >= 1024);
+  }, []);
   const [examStep, setExamStep] = React.useState<'list' | 'select' | 'form' | 'summary' | 'success'>('list');
   const [selectedExamId, setSelectedExamId] = React.useState<string | null>(null);
   const [selectedExamType, setSelectedExamType] = React.useState<string | null>(null);
@@ -430,7 +453,7 @@ export default function App() {
       case 'TetapanAm':
         return <TetapanAm />;
       default:
-        return <Dashboard role={role} onViewExam={(id) => console.log('View exam', id)} onNavigate={(view) => setActiveView(view as any)} />;
+        return <Dashboard role={role} exams={exams} onViewExam={(id) => console.log('View exam', id)} onNavigate={(view) => setActiveView(view as any)} />;
     }
   };
 
@@ -462,7 +485,7 @@ export default function App() {
           role={role} 
           setRole={setRole} 
           onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} 
-          onLogout={() => setAppMode('front')}
+          onLogout={() => setAppMode('candidate')}
         />
         
         <div className="flex-1 min-w-0 p-4 lg:p-6 overflow-y-auto overflow-x-hidden">
@@ -501,3 +524,4 @@ export default function App() {
     </div>
   );
 }
+

@@ -160,7 +160,7 @@ export const ProfilPengguna = () => {
                 <ArrowLeft className="w-4 h-4 text-gray-500" /> Kembali
               </button>
             )}
-            {(view === 'view' || view === 'edit') && view !== 'list' && (
+            {(view === 'view' || view === 'edit') && (
               <>
                 <button onClick={handleEditClick} className="bg-white text-action-teal border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-teal-50 transition-colors">
                   <Edit className="w-4 h-4" /> Kemaskini

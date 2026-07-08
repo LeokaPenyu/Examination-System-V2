@@ -122,7 +122,11 @@ export const CandidateDashboard: React.FC<CandidateDashboardProps> = ({ onLogout
   const [selectedExamResult, setSelectedExamResult] = useState<ExamItem | null>(null);
   
   const [activeView, setActiveView] = useState<'dashboard' | 'upcoming' | 'retest' | 'past'>('dashboard');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    setIsSidebarOpen(window.innerWidth >= 1024);
+  }, []);
   const [examMenuOpen, setExamMenuOpen] = useState(true);
 
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);

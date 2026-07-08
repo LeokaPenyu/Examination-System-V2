@@ -124,6 +124,9 @@ const generateMockQuestions = (): Question[] => {
 };
 
 const getInitialQuestions = (): Question[] => {
+  if (typeof window === 'undefined') {
+    return generateMockQuestions();
+  }
   const saved = localStorage.getItem('shared_exam_questions');
   if (saved) {
     try {
@@ -148,5 +151,7 @@ export let sharedQuestions: Question[] = getInitialQuestions();
 
 export const updateSharedQuestions = (newQuestions: Question[]) => {
   sharedQuestions = newQuestions;
-  localStorage.setItem('shared_exam_questions', JSON.stringify(newQuestions));
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('shared_exam_questions', JSON.stringify(newQuestions));
+  }
 };
